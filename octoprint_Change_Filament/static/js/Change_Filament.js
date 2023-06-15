@@ -68,7 +68,7 @@ $(function() {
 
             const zLiftRelative = settings.z_lift_relative();
             const parkSpeed = settings.park_speed();
-            const parkCoodinates = {
+            const parkCoordinates = {
                 x: settings.x_park(),
                 y: settings.y_park(),
             };
@@ -95,7 +95,7 @@ $(function() {
                             'G0 Z' + zLiftRelative + ' F' + parkSpeed,
                             ...setPreParkHomeGCODEs,
                             'G90',
-                            'G0 Y' + parkCoodinates.y + ' X' + parkCoodinates.x + ' F' + parkSpeed,
+                            'G0 Y' + parkCoordinates.y + ' X' + parkCoordinates.x + ' F' + parkSpeed,
                             'M117 Nozzle parked',
                         ],
                         'customClass': 'btn',
