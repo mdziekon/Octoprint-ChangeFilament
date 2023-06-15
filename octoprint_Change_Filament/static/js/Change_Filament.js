@@ -30,6 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 $(function() {
+    const preParkPauseGCODEs = [
+        'M0',
+    ];
+    const preParkHomeGCODEs = [
+        'G28 X0 Y0',
+    ];
+    const preParkExtrudeGCODEs = [
+        'M83',
+        'G1 E-5 F50',
+    ];
+
 	function Change_filamentViewModel(parameters) {
 		const self = this;
 
@@ -39,22 +50,36 @@ $(function() {
 		self.getAdditionalControls = function() {
 			const settings = self.settings.settings.plugins.Change_Filament;
 
-			var preparkpause = '';
-			if (settings.pause_before_park() != false) {
-				preparkpause = 'M0';
-			}
+            const setPreParkPauseGCODEs = (
+                (settings.pause_before_park() != false)
+                ? preParkPauseGCODEs
+                : []
+            );
+            const setPreParkHomeGCODEs = (
+                (settings.home_before_park() != false)
+                ? 'G28 X0 Y0'
+                : ''
+            );
+            const setPreParkExtrudeGCODEs = (
+                (settings.retract_before_park() != false)
+                ? preParkExtrudeGCODEs
+                : []
+            );
 
-			var preparkhome = '';
-			if (settings.home_before_park() != false) {
-				preparkhome = 'G28 X0 Y0';
-			}
-
-			var preparkextrude0 = '';
-			var preparkextrude1 = '';
-			if (settings.retract_before_park() != false) {
-				preparkextrude0 = 'M83';
-				preparkextrude1 = 'G1 E-5 F50';
-			}
+            const zLiftRelative = settings.z_lift_relative();
+            const parkSpeed = settings.park_speed();
+            const parkCoodinates = {
+                x: settings.x_park(),
+                y: settings.y_park(),
+            };
+            const loadConfig = {
+                speed: settings.load_speed(),
+                length: settings.load_length(),
+            };
+            const unloadConfig = {
+                speed: settings.unload_speed(),
+                length: settings.unload_length(),
+            };
 
 			return [{
 				'customClass': '',
@@ -64,26 +89,24 @@ $(function() {
 					{
                         'commands': [
                             'M117 Parking nozzle',
-                            preparkpause,
-                            preparkextrude0,
-                            preparkextrude1,
+                            ...setPreParkPauseGCODEs,
+                            ...setPreParkExtrudeGCODEs,
                             'G91',
-                            'G0 Z' + settings.z_lift_relative() + ' F' + settings.park_speed(),
-                            preparkhome,
+                            'G0 Z' + zLiftRelative + ' F' + parkSpeed,
+                            ...setPreParkHomeGCODEs,
                             'G90',
-                            'G0 Y' + settings.y_park() + ' X' + settings.x_park() + ' F' + settings.park_speed(),
+                            'G0 Y' + parkCoodinates.y + ' X' + parkCoodinates.x + ' F' + parkSpeed,
                             'M117 Nozzle parked',
 						],
 						'customClass': 'btn',
-                        'additionalClasses':
-                        'changefilament-park',
+                        'additionalClasses': 'changefilament-park',
                         'name': 'Park',
                     },
 					{
                         'commands': [
                             'M117 Unloading filament',
                             'M83',
-                            'G1 E-' + settings.unload_length() + ' F' + settings.unload_speed(),
+                            'G1 E-' + unloadConfig.length + ' F' + unloadConfig.speed,
                             'M18 E',
                             'M117 Replace filament, set new temp, click Load',
 						],
@@ -95,7 +118,7 @@ $(function() {
                         'commands': [
                             'M117 Loading filament',
                             'M83',
-                            'G1 E' + settings.load_length() + ' F' + settings.load_speed(),
+                            'G1 E' + loadConfig.length + ' F' + loadConfig.speed,
                             'M117 New Filament Loaded',
 						],
 						'customClass': 'btn',
