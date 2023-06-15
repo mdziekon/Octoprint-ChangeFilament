@@ -48,37 +48,37 @@ $(function() {
         self.controlViewModel = parameters[1];
 
         self.getAdditionalControls = function() {
-            const settings = self.settings.settings.plugins.Change_Filament;
+            const pluginSettings = self.settings.settings.plugins.Change_Filament;
 
             const setPreParkPauseGCODEs = (
-                (settings.pause_before_park() != false)
+                (pluginSettings.pause_before_park() != false)
                 ? preParkPauseGCODEs
                 : []
             );
             const setPreParkHomeGCODEs = (
-                (settings.home_before_park() != false)
+                (pluginSettings.home_before_park() != false)
                 ? 'G28 X0 Y0'
                 : ''
             );
             const setPreParkExtrudeGCODEs = (
-                (settings.retract_before_park() != false)
+                (pluginSettings.retract_before_park() != false)
                 ? preParkExtrudeGCODEs
                 : []
             );
 
-            const zLiftRelative = settings.z_lift_relative();
-            const parkSpeed = settings.park_speed();
+            const zLiftRelative = pluginSettings.z_lift_relative();
+            const parkSpeed = pluginSettings.park_speed();
             const parkCoordinates = {
-                x: settings.x_park(),
-                y: settings.y_park(),
+                x: pluginSettings.x_park(),
+                y: pluginSettings.y_park(),
             };
             const loadConfig = {
-                speed: settings.load_speed(),
-                length: settings.load_length(),
+                speed: pluginSettings.load_speed(),
+                length: pluginSettings.load_length(),
             };
             const unloadConfig = {
-                speed: settings.unload_speed(),
-                length: settings.unload_length(),
+                speed: pluginSettings.unload_speed(),
+                length: pluginSettings.unload_length(),
             };
 
             return [{
