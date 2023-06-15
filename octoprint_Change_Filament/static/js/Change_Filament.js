@@ -44,11 +44,10 @@ $(function() {
     function Change_filamentViewModel(parameters) {
         const self = this;
 
-        self.settings = parameters[0];
-        self.controlViewModel = parameters[1];
+        const [ settingsViewModel, controlViewModel ] = parameters;
 
         self.getAdditionalControls = function() {
-            const pluginSettings = self.settings.settings.plugins.Change_Filament;
+            const pluginSettings = settingsViewModel.settings.plugins.Change_Filament;
 
             const setPreParkPauseGCODEs = (
                 (pluginSettings.pause_before_park() != false)
