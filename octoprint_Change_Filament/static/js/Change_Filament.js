@@ -31,13 +31,13 @@
  */
 $(function() {
 	function Change_filamentViewModel(parameters) {
-		var self = this;
+		const self = this;
 
 		self.settings = parameters[0];
 		self.controlViewModel = parameters[1];
 
 		self.getAdditionalControls = function() {
-			var settings = self.settings.settings.plugins.Change_Filament;
+			const settings = self.settings.settings.plugins.Change_Filament;
 
 			var preparkpause = '';
 			if (settings.pause_before_park() != false) {
@@ -57,46 +57,68 @@ $(function() {
 			}
 
 			return [{
-				'customClass': '', 'layout': 'horizontal', 'name': 'Change Filament', 'children':[
-					{'commands': [
-						'M117 Parking nozzle',
-						preparkpause,
-						preparkextrude0,
-						preparkextrude1,
-						'G91',
-						'G0 Z' + settings.z_lift_relative() + ' F' + settings.park_speed(),
-						preparkhome,
-						'G90',
-						'G0 Y' + settings.y_park() + ' X' + settings.x_park() + ' F' + settings.park_speed(),
-						'M117 Nozzle parked'
+				'customClass': '',
+                'layout': 'horizontal',
+                'name': 'Change Filament',
+                'children': [
+					{
+                        'commands': [
+                            'M117 Parking nozzle',
+                            preparkpause,
+                            preparkextrude0,
+                            preparkextrude1,
+                            'G91',
+                            'G0 Z' + settings.z_lift_relative() + ' F' + settings.park_speed(),
+                            preparkhome,
+                            'G90',
+                            'G0 Y' + settings.y_park() + ' X' + settings.x_park() + ' F' + settings.park_speed(),
+                            'M117 Nozzle parked',
 						],
-						'customClass': 'btn', 'additionalClasses': 'changefilament-park', 'name': ' Park'},
-					{'commands': [
-						'M117 Unloading filament',
-						'M83',
-						'G1 E-' + settings.unload_length() + ' F' + settings.unload_speed(),
-						'M18 E',
-						'M117 Replace filament, set new temp, click Load'
+						'customClass': 'btn',
+                        'additionalClasses':
+                        'changefilament-park',
+                        'name': 'Park',
+                    },
+					{
+                        'commands': [
+                            'M117 Unloading filament',
+                            'M83',
+                            'G1 E-' + settings.unload_length() + ' F' + settings.unload_speed(),
+                            'M18 E',
+                            'M117 Replace filament, set new temp, click Load',
 						],
-						'customClass': 'btn', 'additionalClasses': 'changefilament-unload', 'name': ' Unload'},
-					{'commands': [
-						'M117 Loading filament',
-						'M83',
-						'G1 E' + settings.load_length() + ' F' + settings.load_speed(),
-						'M117 New Filament Loaded'
+						'customClass': 'btn',
+                        'additionalClasses': 'changefilament-unload',
+                        'name': 'Unload',
+                    },
+					{
+                        'commands': [
+                            'M117 Loading filament',
+                            'M83',
+                            'G1 E' + settings.load_length() + ' F' + settings.load_speed(),
+                            'M117 New Filament Loaded',
 						],
-						'customClass': 'btn', 'additionalClasses': 'changefilament-load', 'name': ' Load'},
-					{'commands': [
-						'M600'
+						'customClass': 'btn',
+                        'additionalClasses': 'changefilament-load',
+                        'name': 'Load',
+                    },
+					{
+                        'commands': [
+                            'M600'
 						],
-						'customClass': 'btn', 'additionalClasses': ' btn-danger changefilament-m600', 'name': ' M600'},
-					{'output': 'WARNING: Preheat first! Refresh page after changing settings.'},
-					{'output': 'M600 requires special support in Marlin and must be completed using the control box.'}
+						'customClass': 'btn',
+                        'additionalClasses': 'btn-danger changefilament-m600',
+                        'name': 'M600',
+                    },
+					{
+                        'output': 'WARNING: Preheat first! Refresh page after changing settings.',
+                    },
+					{
+                        'output': 'M600 requires special support in Marlin and must be completed using the control box.',
+                    },
 				]
 			}];
-
 		};
-
 	}
 
 	OCTOPRINT_VIEWMODELS.push({
