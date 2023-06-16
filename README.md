@@ -8,10 +8,9 @@ the control box to use, instead of doing everything in OctoPrint.
 
 ## Setup
 
-Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
-or manually using this URL:
+Manually using this URL:
 
-    https://github.com/jim-p/Change_Filament/archive/master.zip
+    https://github.com/mdziekon/Octoprint-ChangeFilament/archive/master.zip
 
 ## Use
 
