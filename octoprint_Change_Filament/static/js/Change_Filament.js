@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 $(function() {
+    const controlsSelector = "#plugin_changefilament_controls";
+
     const preParkPauseGCODEs = [
         'M0',
     ];
@@ -54,7 +56,6 @@ $(function() {
             };
 
             return [{
-                'customClass': '',
                 'layout': 'horizontal',
                 'name': 'Change Filament',
                 'children': [
@@ -106,6 +107,11 @@ $(function() {
                         'name': 'M600',
                     },
                     {
+                        'commands': [],
+                        'additionalClasses': 'hide plugin_changefilament_controls_inject_m600_with_temps',
+                        'name': 'x',
+                    },
+                    {
                         'output': 'WARNING: Preheat first! Refresh page after changing settings.',
                     },
                     {
@@ -114,10 +120,70 @@ $(function() {
                 ]
             }];
         };
+
+        self.templateApi = {
+            onM600WithTempClicked: async ({ tempProfile }) => {
+                const { extruder: extruderTemp } = tempProfile;
+
+                await $.ajax({
+                    url: `${API_BASEURL}printer/tool`,
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        command: "target",
+                        // TODO: Add support for multitool printers
+                        targets: {
+                            "tool0": extruderTemp,
+                        },
+                    }),
+                    contentType: "application/json; charset=UTF-8"
+                });
+
+                await $.ajax({
+                    url: `${API_BASEURL}printer/command`,
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        commands: [
+                            'M600'
+                        ],
+                    }),
+                    contentType: "application/json; charset=UTF-8"
+                });
+            },
+        };
+
+        const injectM600WithTempsButton = () => {
+            const $injectionPlace = document.querySelector(".plugin_changefilament_controls_inject_m600_with_temps");
+            const $toMove = document.querySelector(controlsSelector);
+
+            $injectionPlace?.parentNode?.replaceChild(
+                $toMove,
+                $injectionPlace
+            );
+
+            $toMove.classList.remove("hide");
+        };
+
+        self.onBeforeBinding = () => {
+            self.templateData = {
+                tempProfiles: ko.toJS(settingsViewModel.settings.temperature.profiles),
+            };
+        };
+
+        self.onAllBound = function () {
+            injectM600WithTempsButton();
+        };
     }
 
     OCTOPRINT_VIEWMODELS.push({
         construct: Change_filamentViewModel,
-        dependencies: [ "settingsViewModel", "controlViewModel" ]
+        dependencies: [
+            "settingsViewModel",
+            "controlViewModel",
+        ],
+        elements: [
+            document.querySelector(controlsSelector),
+        ],
     });
 });

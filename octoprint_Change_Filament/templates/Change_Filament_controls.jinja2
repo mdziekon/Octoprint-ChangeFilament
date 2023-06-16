@@ -1,0 +1,24 @@
+{#
+Copyright 2019, Jim Pingle <jim@pingle.org> and the OctoPrint Change_Filament plugin contributors
+SPDX-License-Identifier: BSD-3-Clause
+#}
+
+<div id="plugin_changefilament_controls" class="custom_section_horizontal hide">
+    <div class="btn-group control-box" style="display: inline-block; margin-bottom: 0;">
+        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <span class="fas fa-refresh"></span>
+            Preheat & M600
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" data-bind="foreach: templateData.tempProfiles">
+            <li>
+                <a
+                    href="#"
+                    data-bind="click: $root.templateApi.onM600WithTempClicked.bind(null, { tempProfile: $data })"
+                >
+                    <span data-bind="text: $data.name"></span>: <span data-bind="text: $data.extruder"></span>℃
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

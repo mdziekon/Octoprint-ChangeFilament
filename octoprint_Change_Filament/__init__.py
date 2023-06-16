@@ -53,7 +53,10 @@ class Change_filamentPlugin(octoprint.plugin.SettingsPlugin,
 		)
 
 	def get_template_configs(self):
-		return [dict(type="settings", custom_bindings=False)]
+		return [
+			dict(type="settings", custom_bindings=False),
+			dict(type="generic", template="Change_Filament_controls.jinja2")
+		]
 
 	def get_assets(self):
 		return dict(
