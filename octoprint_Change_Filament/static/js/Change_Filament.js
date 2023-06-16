@@ -29,7 +29,7 @@ $(function() {
             );
             const setPreParkHomeGCODEs = (
                 (pluginSettings.home_before_park() != false)
-                ? 'G28 X0 Y0'
+                ? preParkHomeGCODEs
                 : ''
             );
             const setPreParkExtrudeGCODEs = (
